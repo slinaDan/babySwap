@@ -1,22 +1,28 @@
-const baseUrl = 'https://ton.hnbangyao.net'
-var tokenToken = { // 要发送给后端的数据
-	'token': localStorage.getItem('token') || '',
-}
+const baseUrl = 'https://ton.babysdogeswap.net'
+let token = localStorage.getItem('token') || ''
+let baseLang = localStorage.getItem('lang') || 'CN'
+$('#setLang').text(baseLang)
 const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-	manifestUrl: 'https://slinadan.github.io/babySwap/tonconnect-manifest.json',
+	manifestUrl: 'https://dayangyang141319.github.io/babydogeswap/tonconnect-manifest.json',
 	buttonRootId: 'ton-connect'
 });
-let token = localStorage.getItem('token')
+
+function updateToken() {
+	var tokenPramas = { // 要发送给后端的数据
+		'token': token,
+		lang: baseLang == 'EN' ? 'en' : 'zh-cn'
+	}
+	return tokenPramas
+}
 
 function apiHttp($, url, params = {}) {
-	console.log('////////////', params);
-	// console.log(Object.assign(tokenToken,params));
+	let tokenPramas = updateToken()
 	return new Promise((resolve, reject) => {
 		$.ajax({
 			url: baseUrl + url,
 			dataType: "jsonp",
 			jsonp: 'callback',
-			data: Object.assign(tokenToken, params),
+			data: Object.assign(tokenPramas, params),
 			success: (res) => {
 				resolve(res)
 				if (res.code != 1) {
@@ -182,10 +188,42 @@ function toast(msg) {
 	}, 1000)
 }
 
-function copy() {
+async function copy() {
 	let addr = localStorage.getItem('userAddress')
-	navigator.clipboard.writeText(addr)
+	// navigator.clipboard.writeText(addr)
+	copyTextToClipboard(addr)
 	toast('复制成功')
+}
+
+function copyTextToClipboard(text) {
+	// 创建一个临时的textarea元素  
+	const textarea = document.createElement('textarea');
+
+	// 设置textarea为不可见  
+	textarea.style.position = 'fixed'; // 固定定位  
+	textarea.style.opacity = 0; // 透明度为0  
+	textarea.style.left = '-9999px'; // 移到屏幕外  
+
+	// 将需要复制的文本设置到textarea中  
+	textarea.value = text;
+
+	// 将textarea添加到body中  
+	document.body.appendChild(textarea);
+
+	// 选中textarea的全部内容  
+	textarea.select();
+
+	try {
+		// 执行复制操作  
+		const successful = document.execCommand('copy');
+		const msg = successful ? 'successful' : 'unsuccessful';
+		console.log('Copying text command was ' + msg);
+	} catch (err) {
+		console.error('Oops, unable to copy', err);
+	}
+
+	// 移除textarea  
+	document.body.removeChild(textarea);
 }
 window.addEventListener('ton-connect-connection-completed', (event) => {
 	console.log('Transaction init==============', event.detail.wallet_address);
@@ -206,7 +244,7 @@ window.addEventListener('ton-connect-connection-completed', (event) => {
 window.addEventListener('ton-connect-disconnection', (event) => {
 	console.log('断开连接！！！！！！！', event.detail.wallet_address);
 	localStorage.clear()
-
+	token = ''
 });
 
 function login(address, inviteCode) {
@@ -216,6 +254,8 @@ function login(address, inviteCode) {
 	}).then(res => {
 		console.log(res);
 		if (res.code == 1) {
+			token = res.data.userInfo.token
+			updateToken()
 			localStorage.setItem('token', res.data.userInfo.token)
 			localStorage.setItem('userInfo', JSON.stringify(res.data.userInfo))
 			setTimeout(() => {
@@ -227,16 +267,12 @@ function login(address, inviteCode) {
 
 function getIndexInfo() {
 	let data = localStorage.getItem('twaInfo')
-	if (data) {
-		setFooter(JSON.parse(data))
-	} else {
-		apiHttp($, "/api/contract/index/index").then(res => {
-			if (res.code == 1) {
-				localStorage.setItem('twaInfo', JSON.stringify(res.data))
-				setFooter(res.data)
-			}
-		})
-	}
+	apiHttp($, "/api/contract/index/index").then(res => {
+		if (res.code == 1) {
+			localStorage.setItem('twaInfo', JSON.stringify(res.data))
+			setFooter(res.data)
+		}
+	})
 }
 
 function showLoading() {
@@ -245,4 +281,57 @@ function showLoading() {
 
 function hideLoading() {
 	document.getElementById("loadingModal").style.display = "none";
+}
+let setLang = document.getElementById('setLang')
+if (setLang) {
+	setLang.addEventListener('click', () => {
+		let lang = $('#setLang').text()
+		console.log(lang);
+		if (lang == 'CN') {
+			baseLang = 'EN'
+		} else {
+			baseLang = 'CN'
+		}
+		$('#setLang').text(baseLang)
+		localStorage.setItem('lang', baseLang)
+		location.reload()
+	})
+}
+
+function loadFooterText() {
+	if (baseLang == 'EN') {
+		$('#joinus') && $('#joinus').html('Join our community')
+		$('#joinText1') && $('#joinText1').html('explore')
+		$('#joinText2') && $('#joinText2').html('user')
+		$('#joinText3') && $('#joinText3').html('develop')
+		$('#tabbarText1') && $('#tabbarText1').html('transaction')
+		$('#tabbarText2') && $('#tabbarText2').html('pond')
+		$('#tabbarText3') && $('#tabbarText3').html('Destruction')
+		$('#tabbarText4') && $('#tabbarText4').html('bridge')
+		$('#tabbarText5') && $('#tabbarText5').html('Community token')
+		$('#moreText1') && $('#moreText1').html('address:')
+		$('#moreText2') && $('#moreText2').html('home page')
+		$('#moreText3') && $('#moreText3').html('My assets')
+		$('#moreText4') && $('#moreText4').html('the charts')
+		$('#moreText5') && $('#moreText5').html('invite')
+		$('#loadText') && $('#loadText').html('loading...')
+
+	} else {
+		$('#joinus') && $('#joinus').html('加入我们的社区')
+		$('#joinText1') && $('#joinText1').html('探索')
+		$('#joinText2') && $('#joinText2').html('用户')
+		$('#joinText3') && $('#joinText3').html('开发')
+		$('#tabbarText1') && $('#tabbarText1').html('交易')
+		$('#tabbarText2') && $('#tabbarText2').html('池子')
+		$('#tabbarText3') && $('#tabbarText3').html('销毁')
+		$('#tabbarText4') && $('#tabbarText4').html('跨链桥')
+		$('#tabbarText5') && $('#tabbarText5').html('社区代币')
+		$('#moreText1') && $('#moreText1').html('钱包地址:')
+		$('#moreText2') && $('#moreText2').html('首页')
+		$('#moreText3') && $('#moreText3').html('我的资产')
+		$('#moreText4') && $('#moreText4').html('排行榜')
+		$('#moreText5') && $('#moreText5').html('邀请')
+		$('#loadText') && $('#loadText').html('加载中...')
+
+	}
 }

@@ -7,7 +7,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<title>babydogeswap</title>
 		<link rel="stylesheet" href="./css/common.css" />
-
+		<link rel="shortcut icon" href="favicon.ico">
 		<style>
 			body {
 				padding-bottom: 90px;
@@ -26,8 +26,9 @@
 				background: #262626;
 				border-radius: 20px;
 				margin: 17px 0;
-				padding: 25px 0 0 25px;
+				padding: 25px;
 				font-size: 12px;
+				justify-content: space-between;
 			}
 
 			.transImg {
@@ -49,7 +50,7 @@
 				background: #ec502c;
 				border-radius: 15px;
 				justify-content: center;
-				margin-top: 45px;
+				/* margin-top: 45px; */
 			}
 
 			.menuWrap .flex1 {
@@ -247,58 +248,57 @@
 			<div class="topNav flex-bw">
 				<span class="bold fs-20 twaName"></span>
 				<div class="flex">
+					<span id="setLang"></span>
 					<div class="flex notBind" id="ton-connect"></div>
-					<!-- <div class="flex notBind" id="bindWallet">未绑定</div> -->
-					<!-- <div class="flex bind">0D9...4646</div> -->
 					<img class="menu" onclick="showMore()" src="./images/menu.png" alt="">
 				</div>
 			</div>
 			<div class="transaction flex1">
 				<img class="transImg" src="./images/coin.png" alt="">
 				<div class="flex1">
-					<span class="fs-24">交易</span>
-					<span>您可以在TON链上买卖交易代币</span>
+					<span class="fs-24" id="indexText1"></span>
+					<span id="indexText2"></span>
 				</div>
-				<a href="deal.html" class="btn flex">点击进入</a>
+				<a href="deal.html" class="btn flex" id="indexText3"></a>
 			</div>
 			<div class="flex-bw menuWrap">
 				<a class="flex1" href="pool.html">
 					<img src="./images/icon1.png" alt="">
-					<span>池子</span>
+					<span id="indexText4"></span>
 				</a>
 				<a class="flex1" href="destroy.html">
 					<img src="./images/icon2.png" alt="">
-					<span>销毁</span>
+					<span id="indexText5"></span>
 				</a>
 				<a class="flex1" href="bridge.html">
 					<img src="./images/icon3.png" alt="">
-					<span>桥</span>
+					<span id="indexText6"></span>
 				</a>
 			</div>
 			<div class="transferWrap flex-bw">
 				<img src="./images/invite.png" alt="">
-				<span>社区代币</span>
-				<a class="btn flex" href="communityToken.html">去兑换</a>
+				<span id="indexText7"></span>
+				<a class="btn flex" href="communityToken.html" id="indexText8"></a>
 			</div>
 			<!-- <div class="linkWallet flex" id="linkWallet">
 				<img src="./images/link.png" alt="">
 				<span>链接钱包</span>
 			</div> -->
 			<div class="joinus">
-				<div class="fs-20">加入我们的社区</div>
+				<div class="fs-20" id="joinus"></div>
 				<div class="ourCommunity flex" id="ourCommunity">
 				</div>
 				<div class="flex-bw" id="footerAbout">
 					<div class="flex1">
-						<span>探索</span>
+						<span id="joinText1"></span>
 						<ul id="dt1"></ul>
 					</div>
 					<div class="flex1">
-						<span>用户</span>
+						<span id="joinText2"></span>
 						<ul id="dt2"></ul>
 					</div>
 					<div class="flex1">
-						<span>开发</span>
+						<span id="joinText3"></span>
 						<ul id="dt3"></ul>
 					</div>
 				</div>
@@ -306,23 +306,23 @@
 			<div class="tabbar flex">
 				<a class="flex1" href="deal.html">
 					<img src="./images/tab1.png" alt="">
-					<span>交易</span>
+					<span id="tabbarText1"></span>
 				</a>
 				<a class="flex1" href="pool.html">
 					<img src="./images/tab2.png" alt="">
-					<span>池子</span>
+					<span id="tabbarText2"></span>
 				</a>
 				<a class="flex1" href="destroy.html">
 					<img src="./images/tab3.png" alt="">
-					<span>销毁</span>
+					<span id="tabbarText3"></span>
 				</a>
 				<a class="flex1" href="bridge.html">
 					<img src="./images/tab4.png" alt="">
-					<span>跨链桥</span>
+					<span id="tabbarText4"></span>
 				</a>
 				<a class="flex1" href="communityToken.html">
 					<img src="./images/tab5.png" alt="">
-					<span>社区代币</span>
+					<span id="tabbarText5"></span>
 				</a>
 			</div>
 			<!-- 连接钱包弹窗 -->
@@ -356,13 +356,13 @@
 			<!-- 签到弹窗 -->
 			<div class="popup " id="popup1">
 				<div class="modal1 flex1" id="modal1">
-					<span>恭喜您获得</span>
+					<span id="indexText9"></span>
 					<div class="flex">
 						<span class="amount" id="signPrice"></span>
 						<span>babydoge</span>
 					</div>
 					<img src="./images/sign.png" alt="">
-					<div class="btn flex" onclick="closePopup1()">开心收下</div>
+					<div class="btn flex" id="indexText10" onclick="closePopup1()"></div>
 				</div>
 			</div>
 			<!-- 更多菜单 -->
@@ -371,25 +371,25 @@
 					<span class="bold twaName"></span>
 					<div class="walletBtn flex">
 						<div class="flex">
-							<span>钱包地址：</span>
+							<span id="moreText1"></span>
 							<span id="walletAddress"></span>
 						</div>
 						<img src="./images/copy.png" onclick="copy()" alt="">
 					</div>
 					<a class="flex-bw" href="index.html">
-						<span>首页</span>
+						<span id="moreText2"></span>
 						<img src="./images/right.png" alt="">
 					</a>
 					<a class="flex-bw" href="wallet.html">
-						<span>我的资产</span>
+						<span id="moreText3"></span>
 						<img src="./images/right.png" alt="">
 					</a>
 					<a class="flex-bw" href="ranking.html">
-						<span>排行榜</span>
+						<span id="moreText4"></span>
 						<img src="./images/right.png" alt="">
 					</a>
 					<a class="flex-bw" href="invite.html">
-						<span>邀请</span>
+						<span id="moreText5"></span>
 						<img src="./images/right.png" alt="">
 					</a>
 				</div>
@@ -397,7 +397,7 @@
 			<!-- 加载弹窗 -->
 			<div id="loadingModal" class="loadingModal">
 				<div class="modal-content">
-					<p>加载中 . . .</p>
+					<p id="loadText"></p>
 					<img src="images/loading.png" alt="" />
 				</div>
 			</div>
@@ -408,28 +408,60 @@
 				</div>
 			</div>
 		</main>
-		
+
 		<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 		<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-		<script src="./js/http.js"></script>
+
 		<script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
-		<!-- <script src="https://telegram.org/js/telegram-web-app.js"></script> -->
 		<script>
-			
 			function trsAddress(address) {
 				let addr = TonConnectSDK.toUserFriendlyAddress(address, true)
 				localStorage.setItem('userAddress', addr)
+				console.log('addr1111111', TonConnectSDK.toUserFriendlyAddress(address));
+				console.log('addr222222', TonConnectSDK.toUserFriendlyAddress(address, true));
 				// $('#walletAddress').innerHTML = sliceAddress(addr, 4, 4)
 				$('#walletAddress').text(sliceAddress(addr, 4, 4))
 				return addr
 			}
+		</script>
+		<script src="./js/http.js"></script>
+		<script src="https://telegram.org/js/telegram-web-app.js"></script>
+		<script>
 			async function loadData() {
 				await showLoading()
 				await getSign()
 				await getIndexInfo()
-				
+				await reloadText()
+				await loadFooterText()
 				hideLoading()
 			}
+
+			function reloadText() {
+				if (baseLang == 'EN') {
+					$('#indexText1').html('transaction')
+					$('#indexText2').html('You can buy and sell trading tokens on the TON chain')
+					$('#indexText3').html('enter')
+					$('#indexText4').html('pond')
+					$('#indexText5').html('Destruction')
+					$('#indexText6').html('bridge')
+					$('#indexText7').html('Community token')
+					$('#indexText8').html('exchange')
+					$('#indexText9').html('Congratulations on obtaining')
+					$('#indexText10').html('Please accept with joy')
+				} else {
+					$('#indexText1').html('交易')
+					$('#indexText2').html('您可以在TON链上买卖交易代币')
+					$('#indexText3').html('点击进入')
+					$('#indexText4').html('池子')
+					$('#indexText5').html('销毁')
+					$('#indexText6').html('桥')
+					$('#indexText7').html('社区代币')
+					$('#indexText8').html('去兑换')
+					$('#indexText9').html('恭喜您获得')
+					$('#indexText10').html('开心收下')
+				}
+			}
+
 
 			function getSign() {
 				apiHttp($, "/api/contract/sign/index").then(res => {
@@ -437,7 +469,7 @@
 						if (res.data.sign == 0) {
 							// 签到弹窗显示
 							popup1.style.display = 'flex';
-							document.getElementById('signPrice').innerHTML = res.data.price
+							$('#signPrice').text(res.data.price)
 							toReceive()
 						}
 					}
@@ -456,7 +488,7 @@
 			function closePopup1() {
 				popup1.style.display = 'none'
 			}
-
+			// Telegram.WebApp.openLink('https://ton.org/')
 
 
 

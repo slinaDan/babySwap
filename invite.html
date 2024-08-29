@@ -7,7 +7,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<title>babydogeswap</title>
 		<link rel="stylesheet" href="./css/common.css" />
-
+		<link rel="shortcut icon" href="favicon.ico">
 		<style>
 			body {
 				padding: 0;
@@ -48,6 +48,8 @@
 				justify-content: center;
 				margin-top: 26px;
 				font-size: 13px;
+				line-height: 1;
+				text-align: center;
 			}
 
 
@@ -115,7 +117,7 @@
 
 			.inviteModal {
 				width: 374.5px;
-				height: 242px;
+				min-height: 242px;
 				background: #161616;
 				border-radius: 20px 20px 0 0;
 				align-items: center;
@@ -163,6 +165,13 @@
 				color: #EC502C;
 				background-color: #161616;
 			}
+
+			#link {
+				color: #fff;
+				word-break: break-all;
+				padding: 0 10px;
+				text-align: center;
+			}
 		</style>
 	</head>
 
@@ -171,27 +180,29 @@
 			<div class="topNav  flex-bw">
 				<span class="bold fs-20 twaName"></span>
 				<div class="flex">
+					<span id="setLang"></span>
 					<div class="flex notBind" id="ton-connect"></div>
 					<!-- <div class="flex bind">0D9...4646</div> -->
 					<img class="menu" onclick="showMore()" src="./images/menu.png" alt="">
 				</div>
 			</div>
 			<div class="inviteBg">
-				<div class="fs-27">邀请好友</div>
-				<div>获得更多babydoge</div>
-				<div class="flex btn">点击下方按钮分享好友</div>
+				<div class="fs-27" id="inviteText1"></div>
+				<div id="inviteText2"></div>
+				<div class="flex btn" id="inviteText3"></div>
 				<img class="bgimg" src="./images/inviteimg.png" alt="">
 			</div>
 			<div class="inviteWrap flex1">
-				<div class="btn" onclick="showPopup()">邀请好友</div>
-				<a class="btn btn1" href="myTeam.html">查看我的团队</a>
+				<div class="btn" id="inviteText4" onclick="showPopup()"></div>
+				<a class="btn btn1" id="inviteText5" href="myTeam.html"></a>
 			</div>
 			<!-- 邀请弹窗 -->
 			<div class="popup invitePopup" id="invitePopup">
 				<div class="flex1 inviteModal" id="inviteModal">
-					<span>邀请好友</span>
-					<div class="btn btn1" onclick="toCopy()">复制邀请链接</div>
-					<div class="btn">分享邀请链接</div>
+					<span id="inviteText6"></span>
+					<div class="btn btn1" id="link"></div>
+					<div class="btn btn1" id="inviteText7" onclick="toCopy()"></div>
+					<div class="btn" id="inviteText8"></div>
 				</div>
 			</div>
 			<!-- 更多菜单 -->
@@ -200,25 +211,25 @@
 					<span class="bold twaName"></span>
 					<div class="walletBtn flex">
 						<div class="flex">
-							<span>钱包地址：</span>
+							<span id="moreText1"></span>
 							<span id="walletAddress"></span>
 						</div>
 						<img src="./images/copy.png" onclick="copy()" alt="">
 					</div>
 					<a class="flex-bw" href="index.html">
-						<span>首页</span>
+						<span id="moreText2"></span>
 						<img src="./images/right.png" alt="">
 					</a>
 					<a class="flex-bw" href="wallet.html">
-						<span>我的资产</span>
+						<span id="moreText3"></span>
 						<img src="./images/right.png" alt="">
 					</a>
 					<a class="flex-bw" href="ranking.html">
-						<span>排行榜</span>
+						<span id="moreText4"></span>
 						<img src="./images/right.png" alt="">
 					</a>
 					<a class="flex-bw" href="invite.html">
-						<span>邀请</span>
+						<span id="moreText5"></span>
 						<img src="./images/right.png" alt="">
 					</a>
 				</div>
@@ -226,7 +237,7 @@
 			<!-- 加载弹窗 -->
 			<div id="loadingModal" class="loadingModal">
 				<div class="modal-content">
-					<p>加载中 . . .</p>
+					<p id="loadText"></p>
 					<img src="images/loading.png" alt="" />
 				</div>
 			</div>
@@ -245,12 +256,12 @@
 		<script>
 			let invitePopup = document.getElementById('invitePopup')
 			let inviteModal = document.getElementById('inviteModal')
-			let posterUrl = ''
+			let posterUrl = localStorage.getItem('posterUrl') || ''
 
 			function trsAddress(address) {
 				let addr = TonConnectSDK.toUserFriendlyAddress(address, true)
 				localStorage.setItem('userAddress', addr)
-				document.getElementById('walletAddress').innerHTML = sliceAddress(addr, 4, 4)
+				$('#walletAddress').text(sliceAddress(addr, 4, 4))
 				return addr
 			}
 
@@ -258,13 +269,23 @@
 				apiHttp($, "/api/contract/user/index").then(res => {
 					if (res.code == 1) {
 						posterUrl = res.data.posterUrl
+						$('#link').text(posterUrl)
+						localStorage.setItem('posterUrl', posterUrl)
 					}
 				})
 			}
 
 			function toCopy() {
-				navigator.clipboard.writeText(posterUrl)
-				toast('复制成功')
+				console.log('posterUrl', posterUrl);
+				if (posterUrl) {
+					// navigator.clipboard.writeText(posterUrl)
+					copyTextToClipboard(posterUrl)
+					if (baseLang == 'EN') {
+						toast('Replicating Success')
+					} else {
+						toast('复制成功')
+					}
+				}
 			}
 
 			function showPopup() {
@@ -276,12 +297,39 @@
 			async function loadData() {
 				await showLoading()
 				await getIndexInfo()
-				await getInfo()
-				
+				if (!posterUrl) {
+					getInfo()
+				} else {
+					$('#link').text(posterUrl)
+				}
+				reloadText()
+				loadFooterText()
 				hideLoading()
 			}
-			if(token){
+			if (token) {
 				loadData()
+			}
+
+			function reloadText() {
+				if (baseLang == 'EN') {
+					$('#inviteText1').html('Invite friends')
+					$('#inviteText2').html('Get more babydoge')
+					$('#inviteText3').html('Click the button below to share friends')
+					$('#inviteText4').html('Invite friends')
+					$('#inviteText5').html('View my team')
+					$('#inviteText6').html('Invite friends')
+					$('#inviteText7').html('Copy invitation link')
+					$('#inviteText8').html('Share invitation link')
+				} else {
+					$('#inviteText1').html('邀请好友')
+					$('#inviteText2').html('获得更多babydoge')
+					$('#inviteText3').html('点击下方按钮分享好友')
+					$('#inviteText4').html('邀请好友')
+					$('#inviteText5').html('查看我的团队')
+					$('#inviteText6').html('邀请好友')
+					$('#inviteText7').html('复制邀请链接')
+					$('#inviteText8').html('分享邀请链接')
+				}
 			}
 			// 点击模态框外部时，也关闭它
 			window.onclick = function(event) {
