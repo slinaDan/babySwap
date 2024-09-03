@@ -1,4 +1,4 @@
-const baseUrl = 'https://ton.babysdogeswap.net'
+const baseUrl = 'https://demo.babysdogeswap.net'
 let token = localStorage.getItem('token') || ''
 let baseLang = localStorage.getItem('lang') || 'CN'
 $('#setLang').text(baseLang)
@@ -117,7 +117,13 @@ function closeModal() {
 
 function extractInviteCode(url) {
 	// 使用正则表达式匹配 inviteCode= 后面的数字  
-	const match = url.match(/inviteCode=(\d+)/);
+	let  match = ''
+	if(url.indexOf('tgWebAppStartParam') != -1){
+		match = url.match(/tgWebAppStartParam=(\d+)/);
+	}
+	if(url.indexOf('inviteCode') != -1){
+		match = url.match(/inviteCode=(\d+)/);
+	}
 	if (match) {
 		// 如果匹配成功，返回匹配到的数字  
 		return match[1];
@@ -128,9 +134,6 @@ function extractInviteCode(url) {
 
 function showMore(e) {
 	console.log('xxxxx', location.href);
-	// if (location.href.indexOf('inviteCode') != -1 && location.href.indexOf('#')) {
-	// 	let inviteCode = location.href.split('inviteCode=')[]
-	// }
 	morePopup.style.display = 'flex';
 	moreModal.style.animation = "toLeftAnimate 0.4s forwards"; // 应用上滑动画  
 }
@@ -142,9 +145,7 @@ window.onclick = function(event) {
 	} else if (event.target == popup1) {
 		popup1.style.display = "none";
 	} else if (event.target == morePopup) {
-		// moreModal.style.animationDirection = 'reverse'
 		moreModal.style.animation = "toRightAnimate 0.4s forwards"; // 应用上滑动画  
-		// moreModal.classList.remove('active')
 		setTimeout(() => {
 			morePopup.style.display = "none";
 		}, 200)
@@ -192,7 +193,11 @@ async function copy() {
 	let addr = localStorage.getItem('userAddress')
 	// navigator.clipboard.writeText(addr)
 	copyTextToClipboard(addr)
-	toast('复制成功')
+	if (baseLang == 'EN') {
+		toast('Replicating Success')
+	} else {
+		toast('复制成功')
+	}
 }
 
 function copyTextToClipboard(text) {
@@ -226,7 +231,7 @@ function copyTextToClipboard(text) {
 	document.body.removeChild(textarea);
 }
 window.addEventListener('ton-connect-connection-completed', (event) => {
-	console.log('Transaction init==============', event.detail.wallet_address);
+	console.log('Transaction init==============',event, event.detail.wallet_address);
 	let inviteCode = extractInviteCode(location.href)
 	console.log('inviteCode.........', inviteCode);
 	let address = event.detail.wallet_address
@@ -235,7 +240,7 @@ window.addEventListener('ton-connect-connection-completed', (event) => {
 
 	if (!token) {
 		setTimeout(() => {
-			login(addr || address, inviteCode)
+			login(addr, inviteCode)
 		}, 500)
 	} else {
 		loadData()
@@ -248,9 +253,13 @@ window.addEventListener('ton-connect-disconnection', (event) => {
 });
 
 function login(address, inviteCode) {
+	let res = md5(address);
+	let sign = md5(res);
+	console.log(333,sign);
 	apiHttp($, "/api/contract/auth/login", {
 		address: address,
-		inviteCode: inviteCode || ''
+		inviteCode: inviteCode || '',
+		sign:sign
 	}).then(res => {
 		console.log(res);
 		if (res.code == 1) {

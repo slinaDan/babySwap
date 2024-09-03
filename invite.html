@@ -166,7 +166,7 @@
 				background-color: #161616;
 			}
 
-			#link {
+			#link,#link1 {
 				color: #fff;
 				word-break: break-all;
 				padding: 0 10px;
@@ -187,22 +187,24 @@
 				</div>
 			</div>
 			<div class="inviteBg">
-				<div class="fs-27" id="inviteText1"></div>
-				<div id="inviteText2"></div>
-				<div class="flex btn" id="inviteText3"></div>
+				<div class="fs-27" id="inviteText1">邀请好友</div>
+				<div id="inviteText2">获得更多babydoge</div>
+				<div class="flex btn" id="inviteText3">点击下方按钮分享好友</div>
 				<img class="bgimg" src="./images/inviteimg.png" alt="">
 			</div>
 			<div class="inviteWrap flex1">
-				<div class="btn" id="inviteText4" onclick="showPopup()"></div>
-				<a class="btn btn1" id="inviteText5" href="myTeam.html"></a>
+				<div class="btn" id="inviteText4" onclick="showPopup()">邀请好友</div>
+				<a class="btn btn1" id="inviteText5" href="myTeam.html">查看我的团队</a>
 			</div>
 			<!-- 邀请弹窗 -->
 			<div class="popup invitePopup" id="invitePopup">
 				<div class="flex1 inviteModal" id="inviteModal">
 					<span id="inviteText6"></span>
 					<div class="btn btn1" id="link"></div>
-					<div class="btn btn1" id="inviteText7" onclick="toCopy()"></div>
-					<div class="btn" id="inviteText8"></div>
+					<div class="btn" id="inviteText9" onclick="toCopy(1)">分享邀请链接</div>
+					<div class="btn btn1" id="link1"></div>
+					<!-- <div class="btn btn1" id="inviteText7" onclick="toCopy()">复制邀请链接</div> -->
+					<div class="btn" id="inviteText8" onclick="toCopy(2)">分享邀请链接</div>
 				</div>
 			</div>
 			<!-- 更多菜单 -->
@@ -250,16 +252,19 @@
 		</main>
 		<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 		<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+		<script src="https://cdn.bootcdn.net/ajax/libs/blueimp-md5/2.16.0/js/md5.js"></script>
 		<script src="./js/http.js"></script>
 		<script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
-		<script src="https://telegram.org/js/telegram-web-app.js"></script>
+		<!-- <script src="https://telegram.org/js/telegram-web-app.js"></script> -->
 		<script>
 			let invitePopup = document.getElementById('invitePopup')
 			let inviteModal = document.getElementById('inviteModal')
-			let posterUrl = localStorage.getItem('posterUrl') || ''
+			let githubUrl = localStorage.getItem('githubUrl') || ''
+			let tmeUrl = localStorage.getItem('tmeUrl') || ''
+		
 
 			function trsAddress(address) {
-				let addr = TonConnectSDK.toUserFriendlyAddress(address, true)
+				let addr = TonConnectSDK.toUserFriendlyAddress(address)
 				localStorage.setItem('userAddress', addr)
 				$('#walletAddress').text(sliceAddress(addr, 4, 4))
 				return addr
@@ -268,18 +273,29 @@
 			function getInfo() {
 				apiHttp($, "/api/contract/user/index").then(res => {
 					if (res.code == 1) {
-						posterUrl = res.data.posterUrl
-						$('#link').text(posterUrl)
-						localStorage.setItem('posterUrl', posterUrl)
+						githubUrl = res.data.githubUrl
+						tmeUrl = res.data.tmeUrl
+						$('#link1').text(githubUrl)
+						localStorage.setItem('githubUrl', githubUrl)
+						$('#link').text(tmeUrl)
+						localStorage.setItem('tmeUrl', tmeUrl)
 					}
 				})
 			}
 
-			function toCopy() {
-				console.log('posterUrl', posterUrl);
-				if (posterUrl) {
-					// navigator.clipboard.writeText(posterUrl)
-					copyTextToClipboard(posterUrl)
+			function toCopy(i) {
+				// console.log('posterUrl', posterUrl);
+				// if (posterUrl) {
+				// 	copyTextToClipboard(posterUrl)
+				// 	if (baseLang == 'EN') {
+				// 		toast('Replicating Success')
+				// 	} else {
+				// 		toast('复制成功')
+				// 	}
+				// }
+				console.log('tmeUrl', tmeUrl);
+				if (tmeUrl) {
+					copyTextToClipboard(i==1?tmeUrl:githubUrl)
 					if (baseLang == 'EN') {
 						toast('Replicating Success')
 					} else {
@@ -297,10 +313,16 @@
 			async function loadData() {
 				await showLoading()
 				await getIndexInfo()
-				if (!posterUrl) {
+				// if (!posterUrl) {
+				// 	getInfo()
+				// } else {
+				// 	$('#link').text(posterUrl)
+				// }
+				if (!tmeUrl || !githubUrl) {
 					getInfo()
 				} else {
-					$('#link').text(posterUrl)
+					$('#link').text(tmeUrl)
+					$('#link1').text(githubUrl)
 				}
 				reloadText()
 				loadFooterText()
@@ -319,7 +341,8 @@
 					$('#inviteText5').html('View my team')
 					$('#inviteText6').html('Invite friends')
 					$('#inviteText7').html('Copy invitation link')
-					$('#inviteText8').html('Share invitation link')
+					$('#inviteText8').html('Copy invitation link')
+					$('#inviteText9').html('Copy invitation link')
 				} else {
 					$('#inviteText1').html('邀请好友')
 					$('#inviteText2').html('获得更多babydoge')
@@ -328,7 +351,8 @@
 					$('#inviteText5').html('查看我的团队')
 					$('#inviteText6').html('邀请好友')
 					$('#inviteText7').html('复制邀请链接')
-					$('#inviteText8').html('分享邀请链接')
+					$('#inviteText8').html('复制邀请链接')
+					$('#inviteText9').html('复制邀请链接')
 				}
 			}
 			// 点击模态框外部时，也关闭它
