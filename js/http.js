@@ -3,7 +3,7 @@ let token = localStorage.getItem('token') || ''
 let baseLang = localStorage.getItem('lang') || 'CN'
 $('#setLang').text(baseLang)
 const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-	manifestUrl: 'https://dayangyang141319.github.io/babydogeswap/tonconnect-manifest.json',
+	manifestUrl: 'https://slinadan.github.io/babySwap/tonconnect-manifest.json',
 	buttonRootId: 'ton-connect'
 });
 

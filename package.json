@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "tp-js-sdk": "^3.7.14",
+    "webpack": "^5.94.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^5.1.4"
+  }
+}
