@@ -406,34 +406,34 @@
 				<div class="dealWrap">
 					<div class="flex-bw token">
 						<span id="dealText2">从</span>
-						<div class="flex" onclick="showPopup()">
-							<img class="logo" src="./images/eth.png" alt="">
-							<span id="">TON</span>
+						<div class="flex" onclick="reverseToken()">
+							<img class="logo" id="logo1" src="./images/bds.png" alt="">
+							<span id="token1">BDS</span>
 							<img class="select" src="./images/down.png" alt="">
 						</div>
 					</div>
 					<div class="amountWrap flex-bw">
 						<!-- <input id="">0</span> -->
-						<input type="number" id="myInput" placeholder="0">
-						<span class="fs-14">≈$0</span>
+						<input type="number" id="myInput" oninput="updateOtherValue()" placeholder="0">
+						<span class="fs-14" id="doller1">≈$0</span>
 					</div>
 				</div>
-				<img class="exchangeImg" src="./images/exchange.png" alt="" />
+				<img class="exchangeImg" src="./images/exchange.png" onclick="reverseToken()" alt="" />
 				<div class="dealWrap">
 					<div class="flex-bw token">
 						<span id="dealText3">至</span>
-						<div class="flex" onclick="showPopup()">
-							<img class="logo" src="./images/usdt.png" alt="">
-							<span id="">Lon</span>
+						<div class="flex" onclick="reverseToken()">
+							<img class="logo" id="logo2" src="./images/usdt.png" alt="">
+							<span id="token2">USDT</span>
 							<img class="select" src="./images/down.png" alt="">
 						</div>
 					</div>
 					<div class="amountWrap flex-bw">
-						<span id="">0</span>
-						<span class="fs-14">≈0</span>
+						<span id="getPrice">0</span>
+						<span class="fs-14" id="doller2">≈0</span>
 					</div>
 				</div>
-				<span class="computed">1Ton≈1Lon</span>
+				<span class="computed" id="computed">1BDS≈1USDT</span>
 				<div class="btn" id="dealText4" onclick="toDedust()">兑换</div>
 			</div>
 			<!-- 设置弹窗 -->
@@ -458,35 +458,14 @@
 						<div class="flex-bw">
 							<div class="flex">
 								<div class="dot"></div>
-								<span>ETH</span>
+								<span>BDS</span>
 							</div>
 							<span>$0</span>
 						</div>
 						<div class="flex-bw">
 							<div class="flex">
 								<div class="dot"></div>
-								<span>ETH</span>
-							</div>
-							<span>$0</span>
-						</div>
-						<div class="flex-bw">
-							<div class="flex">
-								<div class="dot"></div>
-								<span>ETH</span>
-							</div>
-							<span>$0</span>
-						</div>
-						<div class="flex-bw">
-							<div class="flex">
-								<div class="dot"></div>
-								<span>ETH</span>
-							</div>
-							<span>$0</span>
-						</div>
-						<div class="flex-bw">
-							<div class="flex">
-								<div class="dot"></div>
-								<span>ETH</span>
+								<span>USDT</span>
 							</div>
 							<span>$0</span>
 						</div>
@@ -591,6 +570,10 @@
 				$('#walletAddress').text(sliceAddress(addr, 4, 4))
 				return addr
 			}
+			let type = 1
+			let bdsPrice = JSON.parse(localStorage.getItem('twaInfo')).bdsPrice
+			let usdtPrice = JSON.parse(localStorage.getItem('twaInfo')).usdtPrice
+			$('#computed').html(`1BDS≈${bdsPrice}USDT`)
 			async function loadData() {
 				await showLoading()
 				await getIndexInfo()
@@ -633,13 +616,52 @@
 			});
 
 			function toDedust() {
-				let address1 = 'EQCVR1EDwMhDTXSg1SPS2j8yARr6TWbGHfNpBMqtcabTKUnG'
 				let usdtAddress = localStorage.getItem('usdtAddress')
-				window.open(
-					`https://dedust.io/swap/${address1}/${usdtAddress}?amount=${myInput.value * 1e9}`
-				)
+				let bdsAddress = localStorage.getItem('bdsAddress')
+				if (type == 1) {
+					window.open(
+						`https://dedust.io/swap/${bdsAddress}/${usdtAddress}?amount=${myInput.value * 1e9}`
+					)
+				} else {
+					window.open(
+						`https://dedust.io/swap/${usdtAddress}/${bdsAddress}?amount=${myInput.value * 1e9}`
+					)
+				}
 			}
 
+			function reverseToken() {
+				type == 1 ? type = 2 : type = 1
+				if (type == 1) {
+					getPrice = myInput.value * bdsPrice
+					$('#logo1').attr('src', './images/bds.png')
+					$('#token1').html('BDS')
+					$('#logo2').attr('src', './images/usdt.png')
+					$('#token2').html('USDT')
+					$('#computed').html(`1BDS≈${bdsPrice}USDT`)
+				} else {
+					getPrice = myInput.value * usdtPrice
+					$('#logo1').attr('src', './images/usdt.png')
+					$('#token1').html('USDT')
+					$('#logo2').attr('src', './images/bds.png')
+					$('#token2').html('BDS')
+					$('#computed').html(`1USDT≈${usdtPrice}BDS`)
+				}
+				updateOtherValue()
+			}
+
+			function updateOtherValue() {
+				let getPrice = ''
+				if (type == 1) {
+					getPrice = (myInput.value * bdsPrice).toFixed(4)
+					$('#doller1').html('≈$'+getPrice)
+					$('#doller2').html('≈$'+getPrice)
+				} else {
+					getPrice = (myInput.value * usdtPrice).toFixed(4)
+					$('#doller1').html('≈$'+myInput.value)
+					$('#doller2').html('≈$'+myInput.value)
+				}
+				$('#getPrice').html(getPrice)
+			}
 
 			function toRefresh() {
 
