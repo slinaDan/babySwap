@@ -107,12 +107,12 @@
 				<span class="mainColor" id="credit4">0</span>
 				<span>USDT</span>
 			</div>
-			<!-- <div class="mb-20">
-				<span>赠送算力数量：</span>
-				<span class="mainColor">1000</span>
+			<div class="mb-20">
+				<span id="transText6">可转赠数量：</span>
+				<span class="mainColor" id="transNum">0</span>
 				<span>USDT</span>
 			</div>
-			<div>
+			<!-- <div>
 				<span>合计：</span>
 				<span class="mainColor">1000</span>
 				<span>USDT</span>
@@ -151,6 +151,7 @@
 				apiHttp($, "/api/contract/user/index").then(res => {
 					if (res.code == 1) {
 						$('#credit4').text(res.data.credit4)
+						$('#transNum').text(res.data.zzPrice)
 					}
 				})
 			}
@@ -192,6 +193,7 @@
 					$('#transText3').html('Gift quantity')
 					$('#transText4').html('Having computing power:')
 					$('#transText5').html('give')
+					$('#transText6').html('Transferable Quantity:')
 					addressIpt.placeholder = "Recipient's wallet address";
 					priceIpt.placeholder = "Gift quantity";
 				} else {
@@ -200,6 +202,8 @@
 					$('#transText3').html('赠送数量')
 					$('#transText4').html('拥有算力：')
 					$('#transText5').html('赠送')
+					$('#transText6').html('可转赠数量：')
+					
 					addressIpt.placeholder = "接收人钱包地址";
 					priceIpt.placeholder = "赠送数量";
 				}

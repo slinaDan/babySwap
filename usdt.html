@@ -533,8 +533,8 @@
 							list.forEach(item => {
 								if (item.status == 2) {
 									recordItem += `<div class="flex">
-								<span>${baseLang=='EN'?'extract':'提取'}</span>
-								<span class="red">${item.price}</span>
+								<span>${baseLang=='EN'?'extract':'提取'} (${statusInfo[item.status]})</span>
+								<span class="red">${Number(item.price).toFixed(2)}</span>
 								<div class="flex">
 									<div class="flex1">
 										<span>${formatTimestamp(item.createtime,'date')}</span>
@@ -545,8 +545,8 @@
 							</div>`
 								} else {
 									recordItem += `<div class="flex">
-								<span>${baseLang=='EN'?'extract':'提取'}</span>
-								<span class="red">${item.price}</span>
+								<span>${baseLang=='EN'?'extract':'提取'} (${statusInfo[item.status]})</span>
+								<span class="red">${Number(item.price).toFixed(2)}</span>
 								<div class="flex">
 									<div class="flex1">
 										<span>${formatTimestamp(item.createtime,'date')}</span>
