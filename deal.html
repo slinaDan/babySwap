@@ -72,6 +72,11 @@
 				color: #888;
 			}
 
+			.amountWrap input {
+				width: 160px;
+				font-size: 24px;
+			}
+
 			.select {
 				width: 8px;
 				height: 6.5px;
@@ -404,7 +409,8 @@
 						</div>
 					</div>
 					<div class="amountWrap flex-bw">
-						<span id="">0</span>
+						<!-- <input id="">0</span> -->
+						<input type="number" id="myInput" placeholder="0">
 						<span class="fs-14">≈$0</span>
 					</div>
 				</div>
@@ -424,7 +430,7 @@
 					</div>
 				</div>
 				<span class="computed">1Ton≈1Lon</span>
-				<div class="btn" id="dealText4">兑换</div>
+				<div class="btn" id="dealText4" onclick="toDedust()">兑换</div>
 			</div>
 			<!-- 设置弹窗 -->
 			<div class="popup setPopup" id="setPopup">
@@ -524,7 +530,7 @@
 					<span id="tabbarText5">社区代币</span>
 				</a>
 			</div>
-			
+
 			<!-- 更多菜单 -->
 			<div class="popup rightPopup" id="morePopup">
 				<div class="moreModal flex1" id="moreModal">
@@ -597,7 +603,7 @@
 			let setModal = document.getElementById('setModal')
 			let selects = document.querySelectorAll('#setModal .flex')
 			let refresh = document.getElementById('refresh')
-
+			let myInput = document.getElementById('myInput')
 			document.querySelectorAll('.dot').forEach(item => {
 				var randomColor = 'rgb(' +
 					(Math.floor(Math.random() * 256)) + ',' +
@@ -622,7 +628,13 @@
 				});
 			});
 
-
+			function toDedust() {
+				let address1 = 'EQCVR1EDwMhDTXSg1SPS2j8yARr6TWbGHfNpBMqtcabTKUnG'
+				let usdtAddress = localStorage.getItem('usdtAddress')
+				window.open(
+					`https://dedust.io/swap/${address1}/${usdtAddress}?amount=${myInput.value * 1e9}`
+				)
+			}
 
 
 			function toRefresh() {
