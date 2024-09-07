@@ -1,6 +1,10 @@
 const baseUrl = 'https://demo.babysdogeswap.net'
 let token = localStorage.getItem('token') || ''
 let baseLang = localStorage.getItem('lang') || 'CN'
+let bdsAddress = ''
+let burnAddress = ''
+let exchangeAddress = ''
+let usdtAddress = ''
 $('#setLang').text(baseLang)
 const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
 	manifestUrl: 'https://slinadan.github.io/babySwap/tonconnect-manifest.json',
@@ -43,6 +47,10 @@ function setFooter(data) {
 		item.innerHTML = data.name
 	})
 	document.title = data.name;
+	bdsAddress = data.bdsAddress
+	burnAddress = data.burnAddress
+	exchangeAddress = data.exchangeAddress
+	usdtAddress = data.usdtAddress
 	let ourCommunity = document.getElementById('ourCommunity')
 	let dt1 = document.getElementById('dt1')
 	let dt2 = document.getElementById('dt2')
@@ -117,11 +125,11 @@ function closeModal() {
 
 function extractInviteCode(url) {
 	// 使用正则表达式匹配 inviteCode= 后面的数字  
-	let  match = ''
-	if(url.indexOf('tgWebAppStartParam') != -1){
+	let match = ''
+	if (url.indexOf('tgWebAppStartParam') != -1) {
 		match = url.match(/tgWebAppStartParam=(\d+)/);
 	}
-	if(url.indexOf('inviteCode') != -1){
+	if (url.indexOf('inviteCode') != -1) {
 		match = url.match(/inviteCode=(\d+)/);
 	}
 	if (match) {
@@ -231,7 +239,7 @@ function copyTextToClipboard(text) {
 	document.body.removeChild(textarea);
 }
 window.addEventListener('ton-connect-connection-completed', (event) => {
-	console.log('Transaction init==============',event, event.detail.wallet_address);
+	console.log('Transaction init==============', event, event.detail.wallet_address);
 	let inviteCode = extractInviteCode(location.href)
 	console.log('inviteCode.........', inviteCode);
 	let address = event.detail.wallet_address
@@ -255,11 +263,11 @@ window.addEventListener('ton-connect-disconnection', (event) => {
 function login(address, inviteCode) {
 	let res = md5(address);
 	let sign = md5(res);
-	console.log(333,sign);
+	console.log(333, sign);
 	apiHttp($, "/api/contract/auth/login", {
 		address: address,
 		inviteCode: inviteCode || '',
-		sign:sign
+		sign: sign
 	}).then(res => {
 		console.log(res);
 		if (res.code == 1) {
@@ -305,6 +313,35 @@ if (setLang) {
 		localStorage.setItem('lang', baseLang)
 		location.reload()
 	})
+}
+let balance = ''
+async function initWallet() {
+	let myAddress = localStorage.getItem('userAddress')
+	let tonweb = new TonWeb(new TonWeb.HttpProvider('https://toncenter.com/api/v2/jsonRPC', {
+		apiKey: '682589248b2c93bda9856a97cca0179ed0d0f3a0c7a8829e671b049fdf408754'
+	}));
+	const wallet = tonweb.wallet.create({
+		address: myAddress
+	});
+	console.log(6666, usdtAddress);
+	// let walletAddress = await wallet.getAddress()
+	const jettonMinter = new TonWeb.token.jetton.JettonMinter(tonweb.provider, {
+		address: usdtAddress
+	});
+	console.log('jettonMinter',jettonMinter);
+	const jettonAddress = await jettonMinter.getJettonWalletAddress(new TonWeb.utils.Address(myAddress));
+	console.log('jettonAddress',jettonAddress);
+	let jettonWalletAddress = jettonAddress.toString(true, true, true)
+	// 获取余额
+	// const jettonWallet = new TonWeb.token.jetton.JettonWallet(tonweb.provider, {
+	// 	address: jettonAddress
+	// });
+	// const jettonData = await jettonWallet.getData();
+	// console.log('余额', jettonData.balance.toString());
+	// balance = jettonData.balance.toString()
+	console.log('jettonWalletAddress', jettonWalletAddress);
+	return jettonWalletAddress
+	
 }
 
 function loadFooterText() {
