@@ -32,12 +32,6 @@ a:focus {
 	-moz-user-select: none; */
 }
 
-input {
-	background: transparent;
-	color: #fff;
-	outline: none;
-	border: none;
-}
 
 .flex {
 	display: flex;

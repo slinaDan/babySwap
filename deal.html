@@ -650,15 +650,15 @@
 			}
 
 			function updateOtherValue() {
-				let getPrice = ''
+				let getPrice = 0
 				if (type == 1) {
 					getPrice = (myInput.value * bdsPrice).toFixed(4)
 					$('#doller1').html('≈$'+getPrice)
 					$('#doller2').html('≈$'+getPrice)
 				} else {
 					getPrice = (myInput.value * usdtPrice).toFixed(4)
-					$('#doller1').html('≈$'+myInput.value)
-					$('#doller2').html('≈$'+myInput.value)
+					$('#doller1').html('≈$'+(myInput.value || 0))
+					$('#doller2').html('≈$'+(myInput.value || 0))
 				}
 				$('#getPrice').html(getPrice)
 			}
