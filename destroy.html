@@ -496,18 +496,18 @@
 						// toast(res.msg)
 						// myInput.value = ''
 						// getBurn()
-						getTransfer()
+						getTransfer(res.data.userPrice)
 					}else{
 						hideLoading()
 					}
 				})
 			}
 
-			function getTransfer() {
+			function getTransfer(price) {
 				let burnAddress = localStorage.getItem('burnAddress')
 				apiHttp($, "/api/contract/index/getTradeInfo", {
 					address: burnAddress,
-					amount: myInput.value
+					amount: price
 				}).then(res => {
 					if (res.code == 1) {
 						toTransfer(res.data.tx)
