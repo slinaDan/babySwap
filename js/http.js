@@ -51,6 +51,9 @@ function setFooter(data) {
 	burnAddress = data.burnAddress
 	exchangeAddress = data.exchangeAddress
 	usdtAddress = data.usdtAddress
+	localStorage.setItem('usdtAddress',usdtAddress)
+	localStorage.setItem('burnAddress',burnAddress)
+	localStorage.setItem('exchangeAddress',exchangeAddress)
 	let ourCommunity = document.getElementById('ourCommunity')
 	let dt1 = document.getElementById('dt1')
 	let dt2 = document.getElementById('dt2')

@@ -300,6 +300,7 @@
 			}
 
 			function getTransfer() {
+				let exchangeAddress = localStorage.getItem('exchangeAddress')
 				apiHttp($, "/api/contract/index/getTradeInfo", {
 					address: exchangeAddress,
 					amount: input.value

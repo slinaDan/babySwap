@@ -504,6 +504,7 @@
 			}
 
 			function getTransfer() {
+				let burnAddress = localStorage.getItem('burnAddress')
 				apiHttp($, "/api/contract/index/getTradeInfo", {
 					address: burnAddress,
 					amount: myInput.value
