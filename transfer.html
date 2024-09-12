@@ -86,6 +86,31 @@
 			.btn {
 				margin-top: 108px;
 			}
+
+			.passwordModal {}
+
+			.modal {
+				width: 290px;
+				padding: 20px 15px;
+				background: #161616;
+				border-radius: 20px;
+				align-items: center;
+				justify-content: center;
+				nimation-name: zoom;
+				animation-duration: .3s;
+				transition: .2s;
+			}
+
+			.modal .btn {
+				margin-top: 28px;
+			}
+
+			.modal input {
+				margin-top: 18px;
+			}
+			.mainColor{
+				margin-top: 20px;
+			}
 		</style>
 	</head>
 
@@ -131,6 +156,15 @@
 					<p id="toastMsg"></p>
 				</div>
 			</div>
+			<!-- 密码弹窗 -->
+			<div id="passwordModal" class=" popup passwordModal">
+				<div class="modal flex1">
+					<p id="transText7">请输入支付密码</p>
+					<input type="password" id="password" placeholder="请输入支付密码">
+					<div id="transText8" class="btn" onclick="onConfirm()">确认</div>
+					<a href="setPassword.html" class="mainColor">设置密码</a>
+				</div>
+			</div>
 		</main>
 		<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 		<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -140,6 +174,8 @@
 		<script>
 			let addressIpt = document.getElementById('address')
 			let priceIpt = document.getElementById('price')
+			let passwordModal = document.getElementById('passwordModal')
+			let password = document.getElementById('password')
 
 			function getCredit() {
 				apiHttp($, "/api/contract/user/index").then(res => {
@@ -159,25 +195,42 @@
 			loadData()
 
 			function toTransfer() {
-				let address = addressIpt.value
-				let price = priceIpt.value
-				if (!address) {
-					return toast(baseLang == 'EN'?'Please enter the address':'请输入地址')
+				
+				if (!addressIpt.value) {
+					return toast(baseLang == 'EN' ? 'Please enter the address' : '请输入地址')
 				}
-				if (Number(price) <= 0) {
-					return toast(baseLang == 'EN'?'Please enter the quantity':'请输入数量')
+				if (Number(priceIpt.value) <= 0) {
+					return toast(baseLang == 'EN' ? 'Please enter the quantity' : '请输入数量')
 				}
+				passwordModal.style.display = 'flex';
+
+			}
+
+			function onConfirm() {
+				if (!password.value) {
+					return toast(baseLang == 'EN' ? 'Please enter the payment password' : '请输入支付密码')
+				}
+				console.log(password.value);
 				apiHttp($, "/api/contract/exchange/transfer", {
-					address,
-					price
+					address:addressIpt.value,
+					price:priceIpt.value,
+					password: password.value
 				}).then(res => {
 					if (res.code == 1) {
 						toast(res.msg)
 						addressIpt.value = ''
 						priceIpt.value = ''
+						password.value
 						getCredit()
+						passwordModal.style.display = 'none';
 					}
 				})
+			}
+			window.onclick = function(event) {
+				console.log('window.onclick10011111111111111');
+				if (event.target == passwordModal) {
+					passwordModal.style.display = "none";
+				}
 			}
 
 			function reloadText() {
@@ -188,8 +241,11 @@
 					$('#transText4').html('Having computing power:')
 					$('#transText5').html('give')
 					$('#transText6').html('Transferable Quantity:')
+					$('#transText7').html('Please enter the payment password')
+					$('#transText8').html('confirm')
 					addressIpt.placeholder = "Recipient's wallet address";
 					priceIpt.placeholder = "Gift quantity";
+					password.placeholder = "Please enter the payment password";
 				} else {
 					$('#transText1').html('算力转赠')
 					$('#transText2').html('接收人钱包地址')
@@ -197,12 +253,14 @@
 					$('#transText4').html('拥有算力：')
 					$('#transText5').html('赠送')
 					$('#transText6').html('可转赠数量：')
-					
+					$('#transText7').html('请输入支付密码')
+					$('#transText8').html('确认')
+
 					addressIpt.placeholder = "接收人钱包地址";
 					priceIpt.placeholder = "赠送数量";
+					password.placeholder = "请输入支付密码";
 				}
 			}
-
 		</script>
 
 		<!-- Eruda is console for mobile browsers -->

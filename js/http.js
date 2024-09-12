@@ -194,10 +194,19 @@ function extractInviteCode(url) {
 	return null;
 }
 
+ function getIframeEle(elementId, frameId = 'modalFrame') {
+	var iframe = document.getElementById(frameId);
+	var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+	// 获取iframe中的元素
+	var elementInIframe = iframeDoc.getElementById(elementId); // 假设iframe.html中有一个id为'elementId'的元素
+	console.log(444, elementId, frameId, elementInIframe);
+	return elementInIframe
+};
+
 function showMore(e) {
-	console.log('xxxxx', location.href);
+	console.log('xxxxx', morePopup,moreModal);
 	morePopup.style.display = 'flex';
-	moreModal.style.animation = "toLeftAnimate 0.4s forwards"; // 应用上滑动画  
+	// moreModal.style.animation = "toLeftAnimate 0.4s forwards"; // 应用上滑动画  
 }
 // 点击模态框外部时，也关闭它  
 window.onclick = function(event) {
@@ -302,10 +311,7 @@ window.addEventListener('ton-connect-connection-completed', (event) => {
 	console.log(222222222222, address);
 	localStorage.setItem('address', address)
 	let addr = TonConnectSDK.toUserFriendlyAddress(address)
-	// localStorage.setItem('userAddress', addr)
 	$('#walletAddress') && $('#walletAddress').text(sliceAddress(addr, 4, 4))
-	// return addr
-	// let addr = trsAddress(address)
 	myAddress = addr
 	if (!token || preAddress != address) {
 		setTimeout(() => {
@@ -358,11 +364,13 @@ function getIndexInfo() {
 	})
 }
 
-function showLoading() {
+async function showLoading() {
+	// getIframeEle('loadingModal').style.display = "block";
 	document.getElementById("loadingModal").style.display = "block";
 }
 
 function hideLoading() {
+	// getIframeEle('loadingModal').style.display = "none";
 	document.getElementById("loadingModal").style.display = "none";
 }
 let setLang = document.getElementById('setLang')
@@ -387,9 +395,10 @@ async function initWallet() {
 	let tonweb = new TonWeb(new TonWeb.HttpProvider('https://toncenter.com/api/v2/jsonRPC', {
 		apiKey: '682589248b2c93bda9856a97cca0179ed0d0f3a0c7a8829e671b049fdf408754'
 	}));
-	const wallet = tonweb.wallet.create({
-		address: myAddress
-	});
+	// const wallet = tonweb.wallet.create({
+	// 	address: myAddress
+	// });
+	console.log('tonweb,,,,,,,,,,,,', tonweb);
 	console.log(6666, usdtAddress);
 	// let walletAddress = await wallet.getAddress()
 	const jettonMinter = new TonWeb.token.jetton.JettonMinter(tonweb.provider, {
@@ -427,6 +436,8 @@ function loadFooterText() {
 		$('#moreText3') && $('#moreText3').html('My assets')
 		$('#moreText4') && $('#moreText4').html('the charts')
 		$('#moreText5') && $('#moreText5').html('invite')
+		$('#moreText6') && $('#moreText6').html('payment password')
+		
 		$('#loadText') && $('#loadText').html('loading...')
 
 	} else {
@@ -444,6 +455,7 @@ function loadFooterText() {
 		$('#moreText3') && $('#moreText3').html('我的资产')
 		$('#moreText4') && $('#moreText4').html('排行榜')
 		$('#moreText5') && $('#moreText5').html('邀请')
+		$('#moreText6') && $('#moreText6').html('支付密码')
 		$('#loadText') && $('#loadText').html('加载中...')
 
 	}
