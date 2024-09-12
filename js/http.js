@@ -5,6 +5,48 @@ let bdsAddress = ''
 let burnAddress = ''
 let exchangeAddress = ''
 let usdtAddress = ''
+let tokensList = []
+let myAddress = ''
+
+function initTokens() {
+	tokensList = [{
+			name: 'BDS',
+			address: bdsAddress,
+			logo: './images/bds.png'
+		}, {
+			name: 'USDT',
+			address: usdtAddress,
+			logo: './images/usdt.png'
+		}, {
+			name: 'TON',
+			address: 'TON',
+			logo: './images/ton.png'
+		}, {
+			name: 'DOGS',
+			address: 'EQCvxJy4eG8hyHBFsZ7eePxrRsUQSFE_jpptRAYBmcG_DOGS',
+			logo: './images/dogs.png'
+		}, {
+			name: 'NOT',
+			address: 'EQAvlWFDxGF2lXm67y4yzC17wYKD9A0guwPkMs1gOsM__NOT',
+			logo: './images/not_logo.png'
+		}, {
+			name: 'REDO',
+			address: 'EQBZ_cafPyDr5KUTs0aNxh0ZTDhkpEZONmLJA2SNGlLm4Cko',
+			logo: './images/resistance-dog.png'
+		},
+		// {
+		// 	name: 'HAMSTER',
+		// 	address: 'EQACdLIfYndNS6mQ-Mb31mJjj0RBabGxqDQMBQAqSw5xbuer',
+		// 	logo: './images/hams.png'
+		// }, 
+		{
+			name: 'STON',
+			address: 'EQA2kCVNwVsil2EM2mB0SkXytxCqQjS4mttjDpnXmwG9T6bO',
+			logo: './images/ston.png'
+		}
+	]
+}
+
 $('#setLang').text(baseLang)
 const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
 	manifestUrl: 'https://slinadan.github.io/babySwap/tonconnect-manifest.json',
@@ -17,6 +59,13 @@ function updateToken() {
 		lang: baseLang == 'EN' ? 'en' : 'zh-cn'
 	}
 	return tokenPramas
+}
+
+function trsAddress(address) {
+	let addr = TonConnectSDK.toUserFriendlyAddress(address)
+	localStorage.setItem('userAddress', addr)
+	$('#walletAddress').text(sliceAddress(addr, 4, 4))
+	return addr
 }
 
 function apiHttp($, url, params = {}) {
@@ -51,11 +100,11 @@ function setFooter(data) {
 	burnAddress = data.burnAddress
 	exchangeAddress = data.exchangeAddress
 	usdtAddress = data.usdtAddress
-	localStorage.setItem('usdtAddress',usdtAddress)
-	localStorage.setItem('burnAddress',burnAddress)
-	localStorage.setItem('exchangeAddress',exchangeAddress)
-	localStorage.setItem('bdsAddress',bdsAddress)
-	
+	localStorage.setItem('usdtAddress', usdtAddress)
+	localStorage.setItem('burnAddress', burnAddress)
+	localStorage.setItem('exchangeAddress', exchangeAddress)
+	localStorage.setItem('bdsAddress', bdsAddress)
+	initTokens()
 	let ourCommunity = document.getElementById('ourCommunity')
 	let dt1 = document.getElementById('dt1')
 	let dt2 = document.getElementById('dt2')
@@ -203,9 +252,9 @@ function toast(msg) {
 }
 
 async function copy() {
-	let addr = localStorage.getItem('userAddress')
+	// let addr = localStorage.getItem('userAddress')
 	// navigator.clipboard.writeText(addr)
-	copyTextToClipboard(addr)
+	copyTextToClipboard(myAddress)
 	if (baseLang == 'EN') {
 		toast('Replicating Success')
 	} else {
@@ -248,10 +297,17 @@ window.addEventListener('ton-connect-connection-completed', (event) => {
 	let inviteCode = extractInviteCode(location.href)
 	console.log('inviteCode.........', inviteCode);
 	let address = event.detail.wallet_address
+	let preAddress = localStorage.getItem('address')
+	console.log(11111111111, localStorage.getItem('address'));
+	console.log(222222222222, address);
 	localStorage.setItem('address', address)
-	let addr = trsAddress(address)
+	let addr = TonConnectSDK.toUserFriendlyAddress(address)
+	// localStorage.setItem('userAddress', addr)
+	$('#walletAddress') && $('#walletAddress').text(sliceAddress(addr, 4, 4))
+	// return addr
+	// let addr = trsAddress(address)
 
-	if (!token) {
+	if (!token || preAddress != address) {
 		setTimeout(() => {
 			login(addr, inviteCode)
 		}, 500)
@@ -259,6 +315,11 @@ window.addEventListener('ton-connect-connection-completed', (event) => {
 		loadData()
 	}
 });
+window.addEventListener('ton-connect-connection-started', (event) => {
+	console.log('链接钱包前-------------', event, event.detail.wallet_address);
+
+});
+
 window.addEventListener('ton-connect-disconnection', (event) => {
 	console.log('断开连接！！！！！！！', event.detail.wallet_address);
 	localStorage.clear()
@@ -321,7 +382,7 @@ if (setLang) {
 }
 let balance = ''
 async function initWallet() {
-	let myAddress = localStorage.getItem('userAddress')
+	// let myAddress = localStorage.getItem('userAddress')
 	let tonweb = new TonWeb(new TonWeb.HttpProvider('https://toncenter.com/api/v2/jsonRPC', {
 		apiKey: '682589248b2c93bda9856a97cca0179ed0d0f3a0c7a8829e671b049fdf408754'
 	}));
@@ -333,9 +394,9 @@ async function initWallet() {
 	const jettonMinter = new TonWeb.token.jetton.JettonMinter(tonweb.provider, {
 		address: usdtAddress
 	});
-	console.log('jettonMinter',jettonMinter);
+	console.log('jettonMinter', jettonMinter);
 	const jettonAddress = await jettonMinter.getJettonWalletAddress(new TonWeb.utils.Address(myAddress));
-	console.log('jettonAddress',jettonAddress);
+	console.log('jettonAddress', jettonAddress);
 	let jettonWalletAddress = jettonAddress.toString(true, true, true)
 	// 获取余额
 	// const jettonWallet = new TonWeb.token.jetton.JettonWallet(tonweb.provider, {
@@ -346,7 +407,7 @@ async function initWallet() {
 	// balance = jettonData.balance.toString()
 	console.log('jettonWalletAddress', jettonWalletAddress);
 	return jettonWalletAddress
-	
+
 }
 
 function loadFooterText() {

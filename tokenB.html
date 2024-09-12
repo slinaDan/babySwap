@@ -108,9 +108,9 @@
 			}
 
 			.recordWrap .flex .flex {
-				flex: 1.5;
-				padding-left: 10px;
-				justify-content: flex-start;
+				flex: 1;
+				/* padding-left: 10px; */
+				justify-content: center;
 			}
 
 			.recordWrap .flex .flex .flex1 {
@@ -423,21 +423,14 @@
 		<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 		<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 		<script src="https://cdn.bootcdn.net/ajax/libs/blueimp-md5/2.16.0/js/md5.js"></script>
-		<script src="./js/http.js"></script>
 		<script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
-		<!-- <script src="https://telegram.org/js/telegram-web-app.js"></script> -->
+		<script src="./js/http.js"></script>
+		
 		<script>
 			let withdrawPopup = document.getElementById('withdrawPopup')
 			let withdrawModal = document.getElementById('withdrawModal')
 			let input = document.getElementById('input')
 			let current = 0
-
-			function trsAddress(address) {
-				let addr = TonConnectSDK.toUserFriendlyAddress(address)
-				localStorage.setItem('userAddress', addr)
-				$('#walletAddress').text(sliceAddress(addr, 4, 4))
-				return addr
-			}
 
 			function toWithdraw(amount) {
 				let price = ''
@@ -538,7 +531,19 @@
 
 						} else {
 							list.forEach(item => {
-								if (item.status == 2) {
+							// 	if (item.status == 2) {
+							// 		recordItem += `<div class="flex">
+							// 	<span>${baseLang=='EN'?'extract':'提取'} (${statusInfo[item.status]})</span>
+							// 	<span class="red">${Number(item.price).toFixed(2)}</span>
+							// 	<div class="flex">
+							// 		<div class="flex1">
+							// 			<span>${formatTimestamp(item.createtime,'date')}</span>
+							// 			<span>${formatTimestamp(item.createtime,'time')}</span>
+							// 		</div>
+							// 		<div class="btn" onclick="${toWithdraw(item.price)}">${baseLang=='EN'?'receive':'领取'}</div>
+							// 	</div>
+							// </div>`
+							// 	} else {
 									recordItem += `<div class="flex">
 								<span>${baseLang=='EN'?'extract':'提取'} (${statusInfo[item.status]})</span>
 								<span class="red">${Number(item.price).toFixed(2)}</span>
@@ -547,21 +552,9 @@
 										<span>${formatTimestamp(item.createtime,'date')}</span>
 										<span>${formatTimestamp(item.createtime,'time')}</span>
 									</div>
-									<div class="btn" onclick="${toWithdraw(item.price)}">${baseLang=='EN'?'receive':'领取'}</div>
 								</div>
 							</div>`
-								} else {
-									recordItem += `<div class="flex">
-								<span>${baseLang=='EN'?'extract':'提取'} (${statusInfo[item.status]})</span>
-								<span class="red">${Number(item.price).toFixed(2)}</span>
-								<div class="flex">
-									<div class="flex1">
-										<span>${formatTimestamp(item.createtime,'date')}</span>
-										<span>${formatTimestamp(item.createtime,'time')}</span>
-									</div>
-								</div>
-							</div>`
-								}
+								// }
 							})
 							tab2.innerHTML = recordItem
 						}
@@ -661,31 +654,7 @@
 					}, 200)
 				}
 			}
-			// Init TWA
-			Telegram.WebApp.ready();
-
-			// Event occurs whenever theme settings are changed in the user's Telegram app (including switching to night mode).
-			Telegram.WebApp.onEvent('themeChanged', function() {
-				document.documentElement.className = Telegram.WebApp.colorScheme;
-			});
-
-			function setViewportData() {
-				var sizeEl = document.getElementById('viewport-params-size');
-				sizeEl.innerText = 'width: ' + window.innerWidth + ' x ' +
-					'height: ' + Telegram.WebApp.viewportStableHeight;
-
-				var expandEl = document.querySelector('#viewport-params-expand');
-				expandEl.innerText = 'Is Expanded: ' + (Telegram.WebApp.isExpanded ? 'true' : 'false');
-			}
-
-			Telegram.WebApp.setHeaderColor('secondary_bg_color');
-
-			setViewportData();
-			Telegram.WebApp.onEvent('viewportChanged', setViewportData);
-
-			Telegram.WebApp.onEvent('themeChanged', function() {
-				document.body.setAttribute('style', '--bg-color:' + Telegram.WebApp.backgroundColor);
-			});
+			
 		</script>
 
 		<!-- Eruda is console for mobile browsers -->
