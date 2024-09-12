@@ -306,7 +306,7 @@ window.addEventListener('ton-connect-connection-completed', (event) => {
 	$('#walletAddress') && $('#walletAddress').text(sliceAddress(addr, 4, 4))
 	// return addr
 	// let addr = trsAddress(address)
-
+	myAddress = addr
 	if (!token || preAddress != address) {
 		setTimeout(() => {
 			login(addr, inviteCode)
@@ -382,6 +382,7 @@ if (setLang) {
 }
 let balance = ''
 async function initWallet() {
+	console.log(66, myAddress);
 	// let myAddress = localStorage.getItem('userAddress')
 	let tonweb = new TonWeb(new TonWeb.HttpProvider('https://toncenter.com/api/v2/jsonRPC', {
 		apiKey: '682589248b2c93bda9856a97cca0179ed0d0f3a0c7a8829e671b049fdf408754'
