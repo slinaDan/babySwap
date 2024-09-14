@@ -52,11 +52,25 @@ const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
 	manifestUrl: 'https://slinadan.github.io/babySwap/tonconnect-manifest.json',
 	buttonRootId: 'ton-connect'
 });
-// tonConnectUI.setConnectRequestParameters({ state: 'loading' });
-//  tonConnectUI.setConnectRequestParameters({
-//         state: "ready",
-//         value: { tonProof: "7eec121892167a2a0000000066e408aa4638d93f5fda17d84a846a7ce577fc56"}
-//     });
+getTonProof()
+
+function getTonProof() {
+	apiHttp($, "/api/contract/auth/getCodeInfo").then(res => {
+		if (res.code == 1) {
+			console.log('payload', res.data.payload);
+			// tonConnectUI.setConnectRequestParameters({
+			// 	state: 'loading'
+			// });
+			tonConnectUI.setConnectRequestParameters({
+				state: "ready",
+				value: {
+					tonProof: res.data.payload
+				}
+			});
+		}
+	})
+}
+
 function updateToken() {
 	var tokenPramas = { // 要发送给后端的数据
 		'token': token,
@@ -317,12 +331,14 @@ window.addEventListener('ton-connect-connection-completed', (event) => {
 	if (tonConnectUI.connector._wallet.connectItems) {
 		let oriAddress = tonConnectUI.connector._wallet.account.address
 		let network = tonConnectUI.connector._wallet.account.chain
+		let public_key = tonConnectUI.connector._wallet.account.publicKey
 		let state_init = tonConnectUI.connector._wallet.account.walletStateInit
 		let proof = tonConnectUI.connector._wallet.connectItems.tonProof.proof
 		proof.state_init = state_init
 		signPayload = {
 			address: oriAddress,
 			network,
+			public_key,
 			proof
 		}
 
@@ -363,8 +379,10 @@ function login(address, inviteCode) {
 	apiHttp($, "/api/contract/auth/login", {
 		address: address,
 		inviteCode: inviteCode || '',
-		sign: sign
+		sign: sign,
+		body: JSON.stringify(signPayload)
 		// sign:encodeURI(JSON.stringify(signPayload))
+
 	}).then(res => {
 		console.log(res);
 		if (res.code == 1) {
@@ -375,6 +393,8 @@ function login(address, inviteCode) {
 			setTimeout(() => {
 				loadData()
 			}, 100)
+		} else {
+			tonConnectUI.disconnect();
 		}
 	})
 }
