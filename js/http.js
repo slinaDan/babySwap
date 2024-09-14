@@ -52,7 +52,11 @@ const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
 	manifestUrl: 'https://slinadan.github.io/babySwap/tonconnect-manifest.json',
 	buttonRootId: 'ton-connect'
 });
-
+// tonConnectUI.setConnectRequestParameters({ state: 'loading' });
+//  tonConnectUI.setConnectRequestParameters({
+//         state: "ready",
+//         value: { tonProof: "7eec121892167a2a0000000066e408aa4638d93f5fda17d84a846a7ce577fc56"}
+//     });
 function updateToken() {
 	var tokenPramas = { // 要发送给后端的数据
 		'token': token,
@@ -194,7 +198,7 @@ function extractInviteCode(url) {
 	return null;
 }
 
- function getIframeEle(elementId, frameId = 'modalFrame') {
+function getIframeEle(elementId, frameId = 'modalFrame') {
 	var iframe = document.getElementById(frameId);
 	var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 	// 获取iframe中的元素
@@ -204,7 +208,7 @@ function extractInviteCode(url) {
 };
 
 function showMore(e) {
-	console.log('xxxxx', morePopup,moreModal);
+	console.log('xxxxx', morePopup, moreModal);
 	morePopup.style.display = 'flex';
 	// moreModal.style.animation = "toLeftAnimate 0.4s forwards"; // 应用上滑动画  
 }
@@ -301,8 +305,28 @@ function copyTextToClipboard(text) {
 	// 移除textarea  
 	document.body.removeChild(textarea);
 }
+let signPayload = ''
 window.addEventListener('ton-connect-connection-completed', (event) => {
 	console.log('Transaction init==============', event, event.detail.wallet_address);
+	console.log(tonConnectUI);
+	// setTimeout(()=>{
+	console.log(tonConnectUI.connector._wallet.account);
+	console.log();
+	// console.log(tonConnectUI.connector._wallet.connectItems.tonProof.proof);
+	// },200)
+	if (tonConnectUI.connector._wallet.connectItems) {
+		let oriAddress = tonConnectUI.connector._wallet.account.address
+		let network = tonConnectUI.connector._wallet.account.chain
+		let state_init = tonConnectUI.connector._wallet.account.walletStateInit
+		let proof = tonConnectUI.connector._wallet.connectItems.tonProof.proof
+		proof.state_init = state_init
+		signPayload = {
+			address: oriAddress,
+			network,
+			proof
+		}
+
+	}
 	let inviteCode = extractInviteCode(location.href)
 	console.log('inviteCode.........', inviteCode);
 	let address = event.detail.wallet_address
@@ -335,11 +359,12 @@ window.addEventListener('ton-connect-disconnection', (event) => {
 function login(address, inviteCode) {
 	let res = md5(address);
 	let sign = md5(res);
-	console.log(333, sign);
+	console.log(333, JSON.stringify(signPayload));
 	apiHttp($, "/api/contract/auth/login", {
 		address: address,
 		inviteCode: inviteCode || '',
 		sign: sign
+		// sign:encodeURI(JSON.stringify(signPayload))
 	}).then(res => {
 		console.log(res);
 		if (res.code == 1) {
@@ -437,7 +462,7 @@ function loadFooterText() {
 		$('#moreText4') && $('#moreText4').html('the charts')
 		$('#moreText5') && $('#moreText5').html('invite')
 		$('#moreText6') && $('#moreText6').html('payment password')
-		
+
 		$('#loadText') && $('#loadText').html('loading...')
 
 	} else {

@@ -96,7 +96,7 @@
 				border-radius: 20px;
 				align-items: center;
 				justify-content: center;
-				nimation-name: zoom;
+				animation-name: zoom;
 				animation-duration: .3s;
 				transition: .2s;
 			}
@@ -108,7 +108,8 @@
 			.modal input {
 				margin-top: 18px;
 			}
-			.mainColor{
+
+			.mainColor {
 				margin-top: 20px;
 			}
 		</style>
@@ -162,7 +163,7 @@
 					<p id="transText7">请输入支付密码</p>
 					<input type="password" id="password" placeholder="请输入支付密码">
 					<div id="transText8" class="btn" onclick="onConfirm()">确认</div>
-					<a href="setPassword.html" class="mainColor">设置密码</a>
+					<a href="setPassword.html" id="setPsd" class="mainColor">设置密码</a>
 				</div>
 			</div>
 		</main>
@@ -195,7 +196,7 @@
 			loadData()
 
 			function toTransfer() {
-				
+
 				if (!addressIpt.value) {
 					return toast(baseLang == 'EN' ? 'Please enter the address' : '请输入地址')
 				}
@@ -212,15 +213,15 @@
 				}
 				console.log(password.value);
 				apiHttp($, "/api/contract/exchange/transfer", {
-					address:addressIpt.value,
-					price:priceIpt.value,
+					address: addressIpt.value,
+					price: priceIpt.value,
 					password: password.value
 				}).then(res => {
 					if (res.code == 1) {
 						toast(res.msg)
 						addressIpt.value = ''
 						priceIpt.value = ''
-						password.value
+						password.value = ''
 						getCredit()
 						passwordModal.style.display = 'none';
 					}
@@ -243,6 +244,7 @@
 					$('#transText6').html('Transferable Quantity:')
 					$('#transText7').html('Please enter the payment password')
 					$('#transText8').html('confirm')
+					$('#setPsd').html('Set Password')
 					addressIpt.placeholder = "Recipient's wallet address";
 					priceIpt.placeholder = "Gift quantity";
 					password.placeholder = "Please enter the payment password";
@@ -255,7 +257,7 @@
 					$('#transText6').html('可转赠数量：')
 					$('#transText7').html('请输入支付密码')
 					$('#transText8').html('确认')
-
+					$('#setPsd').html('设置密码')
 					addressIpt.placeholder = "接收人钱包地址";
 					priceIpt.placeholder = "赠送数量";
 					password.placeholder = "请输入支付密码";

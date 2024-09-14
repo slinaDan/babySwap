@@ -320,6 +320,40 @@
 				width: 13px;
 				height: 13px;
 			}
+
+			.passwordModal {
+				z-index: 999;
+				width: 290px;
+				height: 248px;
+				padding: 20px 15px;
+				background: #161616;
+				border-radius: 20px;
+				align-items: center;
+				justify-content: center;
+				animation-name: zoom;
+				animation-duration: .3s;
+				transition: .2s;
+			}
+
+			.passwordModal .btn {
+				margin-top: 28px;
+			}
+
+			.passwordModal input {
+				margin-top: 18px;
+				width: 100%;
+				height: 41px;
+				background: rgba(255, 255, 255, 0.03);
+				border: 0.5px solid #343434;
+				border-radius: 20px;
+				outline: none;
+				color: #fff;
+				padding: 0 20px;
+			}
+
+			.passwordModal .mainColor {
+				margin-top: 20px;
+			}
 		</style>
 	</head>
 
@@ -409,6 +443,15 @@
 					</a>
 				</div>
 			</div>
+			<!-- 密码弹窗 -->
+			<div id="passwordModal" class=" popup ">
+				<div class="passwordModal flex1">
+					<p id="transText7">请输入支付密码</p>
+					<input type="password" id="password" placeholder="请输入支付密码">
+					<div id="transText8" class="btn" onclick="onConfirm()">确认</div>
+					<a href="setPassword.html" id="setPsd" class="mainColor">设置密码</a>
+				</div>
+			</div>
 			<!-- 加载弹窗 -->
 			<div id="loadingModal" class="loadingModal">
 				<div class="modal-content">
@@ -433,14 +476,24 @@
 			let withdrawModal = document.getElementById('withdrawModal')
 			let input = document.getElementById('input')
 			let current = 0
+			let passwordModal = document.getElementById('passwordModal')
+			let password = document.getElementById('password')
 
 			function toWithdraw() {
 				let price = input.value
 				if (Number(price) <= 0) {
 					return toast(baseLang == 'EN' ? 'Please enter the extraction quantity' : '请输入提取数量')
 				}
+				passwordModal.style.display = 'flex';
+
+			}
+
+			function onConfirm() {
+				if (!password.value) {
+					return toast(baseLang == 'EN' ? 'Please enter the payment password' : '请输入支付密码')
+				}
 				apiHttp($, "/api/contract/withdraw/index", {
-					price: price,
+					price: input.value,
 					credittype: 'credit1'
 				}).then(res => {
 					if (res.code == 1) {
@@ -451,6 +504,8 @@
 							withdrawPopup.style.display = "none";
 						}, 200)
 						getAsset()
+						password.value = ''
+						passwordModal.style.display = 'none';
 						if (current == 0) {
 							getRebateList()
 						} else {
@@ -582,7 +637,11 @@
 					$('#usdtText7').html('Please enter the extraction quantity')
 					$('#usdtText8').html('Service Charge:')
 					$('#usdtText9').html('extract')
+					$('#transText7').html('Please enter the payment password')
+					$('#transText8').html('confirm')
+					$('#setPsd').html('Set Password')
 					input.placeholder = "Please enter the extraction quantity";
+					password.placeholder = "Please enter the payment password";
 				} else {
 					$('#usdtText1').html('可提取USDT')
 					$('#usdtText2').html('提取')
@@ -593,7 +652,11 @@
 					$('#usdtText7').html('请输入提取数量')
 					$('#usdtText8').html('手续费：')
 					$('#usdtText9').html('提取')
+					$('#transText7').html('请输入支付密码')
+					$('#transText8').html('确认')
+					$('#setPsd').html('设置密码')
 					input.placeholder = "请输入提取数量";
+					password.placeholder = "请输入支付密码";
 				}
 				initTab()
 			}
@@ -647,9 +710,10 @@
 					setTimeout(() => {
 						withdrawPopup.style.display = "none";
 					}, 200)
+				}else if (event.target == passwordModal) {
+					passwordModal.style.display = "none";
 				}
 			}
-			
 		</script>
 
 		<!-- Eruda is console for mobile browsers -->
