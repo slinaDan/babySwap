@@ -494,7 +494,8 @@
 				}
 				apiHttp($, "/api/contract/withdraw/index", {
 					price: input.value,
-					credittype: 'credit1'
+					credittype: 'credit1',
+					password: password.value
 				}).then(res => {
 					if (res.code == 1) {
 						toast(res.msg)
