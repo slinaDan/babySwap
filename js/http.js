@@ -224,7 +224,7 @@ function getIframeEle(elementId, frameId = 'modalFrame') {
 function showMore(e) {
 	console.log('xxxxx', morePopup, moreModal);
 	morePopup.style.display = 'flex';
-	// moreModal.style.animation = "toLeftAnimate 0.4s forwards"; // 应用上滑动画  
+	moreModal.style.animation = "toLeftAnimate 0.4s forwards"; // 应用上滑动画  
 }
 // 点击模态框外部时，也关闭它  
 window.onclick = function(event) {
