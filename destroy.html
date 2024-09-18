@@ -514,6 +514,7 @@
 
 			async function toTransfer(payload) {
 				let jettonWalletAddress = await initWallet()
+				console.log('jettonWalletAddress------------',jettonWalletAddress);
 				try {
 					const transaction = {
 						validUntil: Math.floor(Date.now() / 1000) + 360,

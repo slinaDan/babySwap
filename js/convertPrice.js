@@ -1,12 +1,14 @@
 function toDedust() {
-
+	let unit = 1e9
 	if (desc == 1) {
+		unit = fromToken.name == 'USDT' ? 1e6 : 1e9
 		window.open(
-			`https://dedust.io/swap/${fromToken.address}/${toToken.address}?amount=${myInput.value * 1e9}`
+			`https://dedust.io/swap/${fromToken.address}/${toToken.address}?amount=${myInput.value * unit}`
 		)
 	} else {
+		unit = toToken.name == 'USDT' ? 1e6 : 1e9
 		window.open(
-			`https://dedust.io/swap/${toToken.address}/${fromToken.address}?amount=${myInput.value * 1e9}`
+			`https://dedust.io/swap/${toToken.address}/${fromToken.address}?amount=${myInput.value * unit}`
 		)
 	}
 }

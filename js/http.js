@@ -61,12 +61,12 @@ function getTonProof() {
 			// tonConnectUI.setConnectRequestParameters({
 			// 	state: 'loading'
 			// });
-			tonConnectUI.setConnectRequestParameters({
-				state: "ready",
-				value: {
-					tonProof: res.data.payload
-				}
-			});
+			// tonConnectUI.setConnectRequestParameters({
+			// 	state: "ready",
+			// 	value: {
+			// 		tonProof: res.data.payload
+			// 	}
+			// });
 		}
 	})
 }
@@ -380,8 +380,7 @@ function login(address, inviteCode) {
 		address: address,
 		inviteCode: inviteCode || '',
 		sign: sign,
-		body: JSON.stringify(signPayload)
-		// sign:encodeURI(JSON.stringify(signPayload))
+		// body: JSON.stringify(signPayload)
 
 	}).then(res => {
 		console.log(res);
@@ -437,6 +436,7 @@ let balance = ''
 async function initWallet() {
 	console.log(66, myAddress);
 	// let myAddress = localStorage.getItem('userAddress')
+	// let tonweb = new TonWeb();
 	let tonweb = new TonWeb(new TonWeb.HttpProvider('https://toncenter.com/api/v2/jsonRPC', {
 		apiKey: '682589248b2c93bda9856a97cca0179ed0d0f3a0c7a8829e671b049fdf408754'
 	}));
@@ -449,9 +449,10 @@ async function initWallet() {
 	const jettonMinter = new TonWeb.token.jetton.JettonMinter(tonweb.provider, {
 		address: usdtAddress
 	});
-	console.log('jettonMinter', jettonMinter);
+	console.log('jettonMinter==========', jettonMinter);
+	console.log(new TonWeb.utils.Address(myAddress));
 	const jettonAddress = await jettonMinter.getJettonWalletAddress(new TonWeb.utils.Address(myAddress));
-	console.log('jettonAddress', jettonAddress);
+	console.log('jettonAddress------------', jettonAddress);
 	let jettonWalletAddress = jettonAddress.toString(true, true, true)
 	// 获取余额
 	// const jettonWallet = new TonWeb.token.jetton.JettonWallet(tonweb.provider, {
