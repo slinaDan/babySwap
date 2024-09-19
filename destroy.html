@@ -502,7 +502,7 @@
 				let burnAddress = localStorage.getItem('burnAddress')
 				apiHttp($, "/api/contract/index/getTradeInfo", {
 					address: burnAddress,
-					amount: price
+					amount: price / 1000
 				}).then(res => {
 					if (res.code == 1) {
 						toTransfer(res.data.tx)
