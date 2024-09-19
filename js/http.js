@@ -58,15 +58,15 @@ function getTonProof() {
 	apiHttp($, "/api/contract/auth/getCodeInfo").then(res => {
 		if (res.code == 1) {
 			console.log('payload', res.data.payload);
-			// tonConnectUI.setConnectRequestParameters({
-			// 	state: 'loading'
-			// });
-			// tonConnectUI.setConnectRequestParameters({
-			// 	state: "ready",
-			// 	value: {
-			// 		tonProof: res.data.payload
-			// 	}
-			// });
+			tonConnectUI.setConnectRequestParameters({
+				state: 'loading'
+			});
+			tonConnectUI.setConnectRequestParameters({
+				state: "ready",
+				value: {
+					tonProof: res.data.payload
+				}
+			});
 		}
 	})
 }
@@ -380,7 +380,7 @@ function login(address, inviteCode) {
 		address: address,
 		inviteCode: inviteCode || '',
 		sign: sign,
-		// body: JSON.stringify(signPayload)
+		 body: JSON.stringify(signPayload)
 
 	}).then(res => {
 		console.log(res);

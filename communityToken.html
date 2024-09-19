@@ -297,9 +297,10 @@
 
 			function getTransfer() {
 				let exchangeAddress = localStorage.getItem('exchangeAddress')
+				console.log(input.value / 1000)
 				apiHttp($, "/api/contract/index/getTradeInfo", {
 					address: exchangeAddress,
-					amount: input.value
+					amount: input.value / 1000
 				}).then(res => {
 					if (res.code == 1) {
 						toTransfer(res.data.tx)
