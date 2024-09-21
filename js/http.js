@@ -228,7 +228,7 @@ function showMore(e) {
 }
 // 点击模态框外部时，也关闭它  
 window.onclick = function(event) {
-	console.log('window.onclick10011111111111111');
+	console.log('window.onclick10011111111111111',location.href);
 	if (event.target == popup) {
 		popup.style.display = "none";
 	} else if (event.target == popup1) {
